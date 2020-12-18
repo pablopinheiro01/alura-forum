@@ -13,7 +13,7 @@ public class TopicoDto {
 	private String mensagem;
 	private LocalDateTime dataCriacao;
 	
-	private TopicoDto(Topico topico) {
+	public TopicoDto(Topico topico) {
 		this.id = topico.getId();
 		this.titulo = topico.getTitulo();
 		this.mensagem = topico.getMensagem();
