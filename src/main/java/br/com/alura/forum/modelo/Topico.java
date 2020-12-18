@@ -39,7 +39,7 @@ public class Topico {
 	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
 	
-	private Topico() {
+	public Topico() {
 		
 	}
 
