@@ -46,6 +46,19 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
+	@GetMapping("/listaSimplificada")
+	//@ResponseBody com a anotacao do RestController o Spring identifica que todos os metodos vão ter o responseBody
+	//DTO - Usamos o padrao para quando os dados saem para o cliente
+	public List<TopicoDto> lista(){
+		
+		List<Topico> topicos;
+		
+		topicos = topicoRepository.findAll();
+			
+		return TopicoDto.converter(topicos);
+	}
+	
+	
 	@GetMapping
 	@Cacheable(value = "listaDeTopicos")
 	//@ResponseBody com a anotacao do RestController o Spring identifica que todos os metodos vão ter o responseBody
