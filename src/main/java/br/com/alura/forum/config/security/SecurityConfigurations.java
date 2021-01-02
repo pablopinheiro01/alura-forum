@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.alura.forum.repository.UsuarioRepository;
 
 @EnableWebSecurity
 @Configuration //habilitamos a leitura dessa classe na inicializacao do Spring
@@ -19,6 +22,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService service;
+	
+	@Autowired
+	private TokenService tokenService;
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 	
 	//essa e a configuracao feita para habilitar a injecao do AuthenticationManager na minha controller de autenticacao
 	//esse metodo esta extendido na classe websecurity...
@@ -46,8 +55,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.anyRequest().authenticated()//para as demais url's e necessario estar autenticado
 		//.and().formLogin();//usa o formulario padrao do Spring tradicional que cria sessao
 		.and().csrf().disable() //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//aqui indico a autenticacao feita de maneira stateless
-		
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//aqui indico a autenticacao feita de maneira stateless
+		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);//antes de fazer qualquer coisa pega o nosso filtro para validar o token
 	}
 	
 	//configuracao de recursos estaticos (requisicoes para js, css, imagens etc)

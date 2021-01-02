@@ -25,7 +25,7 @@ public class AutenticacaoController {
 	//essa classe por algum motivo nao vem configurada para fazer a injecao de dependencia no spring
 	//devemos configurar ela no SecurityConfigurations
 	@Autowired
-	private AuthenticationManager authManager;
+	private AuthenticationManager authManager;//utilizado para autenticar sessao com usuario e senha
 	
 	@Autowired
 	private TokenService tokenService;
