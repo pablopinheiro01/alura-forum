@@ -1,14 +1,16 @@
 package br.com.alura.forum.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -17,6 +19,14 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService service;
+	
+	//essa e a configuracao feita para habilitar a injecao do AuthenticationManager na minha controller de autenticacao
+	//esse metodo esta extendido na classe websecurity...
+	@Override
+	@Bean
+	protected AuthenticationManager authenticationManager() throws Exception {
+		return super.authenticationManager();
+	}
 	
 	//configuracoes de autenticacao
 	@Override
@@ -32,8 +42,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.GET, "/topicos").permitAll() //permite qualquer um
 		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll() //permite qualquer um
+		.antMatchers(HttpMethod.POST, "/auth").permitAll() //permite qualquer um
 		.anyRequest().authenticated()//para as demais url's e necessario estar autenticado
-		.and().formLogin();//usa o formulario padrao do Spring
+		//.and().formLogin();//usa o formulario padrao do Spring tradicional que cria sessao
+		.and().csrf().disable() //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//aqui indico a autenticacao feita de maneira stateless
+		
 	}
 	
 	//configuracao de recursos estaticos (requisicoes para js, css, imagens etc)
