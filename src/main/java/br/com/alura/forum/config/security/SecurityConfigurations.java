@@ -63,9 +63,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	//configuracao de recursos estaticos (requisicoes para js, css, imagens etc)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		// TODO Auto-generated method stub
-		super.configure(web);
+		//configuracao para ignorar os enderecos que o swagger chama
+		    web.ignoring()
+		        .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
+	
 	
 	//criei esse metodo apenas para gerar a senha no hash no formato do Bcrypt
 //	public static void main(String[] args) {
