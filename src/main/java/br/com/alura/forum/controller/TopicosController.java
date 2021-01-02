@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -47,12 +50,36 @@ public class TopicosController {
 	public Page<TopicoDto> lista(
 			@RequestParam(required = false) String nomeCurso,
 			@RequestParam(required = true) Integer pagina,
-			@RequestParam(name = "qtd", required = true) Integer quantidadeDeElementosPorPagina
+			@RequestParam(name = "qtd", required = true) Integer quantidadeDeElementosPorPagina,
+			//ordenacao precisa enviar o nome do campo que eu desejo ordenar
+			@RequestParam(required=false) String ordenacao
 			){
 		
 		Page<Topico> topicos;
 		
-		Pageable paginacao = PageRequest.of(pagina, quantidadeDeElementosPorPagina);
+		//abaixo temos a ordenacao que foi utilizada
+		//Pageable paginacao = PageRequest.of(pagina, quantidadeDeElementosPorPagina);
+		Pageable paginacao = PageRequest.of(pagina, quantidadeDeElementosPorPagina, Direction.DESC, ordenacao);
+		
+		if(nomeCurso == null) {
+			topicos = topicoRepository.findAll(paginacao);
+		}else {
+			topicos = topicoRepository.findByCurso_Nome(nomeCurso, paginacao);
+		}
+		return TopicoDto.converter(topicos);
+	}
+	
+	@GetMapping("/paginacao")
+	//http://localhost:8080/topicos/pageable?page=0&qtd=1&size=10&sort=id,asc
+	//http://localhost:8080/topicos/paginacao?page=0&qtd=1&size=10&sort=id,asc&sort=dataCriacao,desc
+	//@ResponseBody com a anotacao do RestController o Spring identifica que todos os metodos vão ter o responseBody
+	//DTO - Usamos o padrao para quando os dados saem para o cliente
+	public Page<TopicoDto> listaComPageable(
+			@RequestParam(required = false) String nomeCurso,
+			@PageableDefault(sort = "id", direction= Direction.DESC, page = 0, size =10) Pageable paginacao
+			){
+		
+		Page<Topico> topicos;
 		
 		if(nomeCurso == null) {
 			topicos = topicoRepository.findAll(paginacao);
