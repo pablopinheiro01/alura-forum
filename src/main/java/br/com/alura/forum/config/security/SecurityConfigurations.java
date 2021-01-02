@@ -52,6 +52,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/topicos").permitAll() //permite qualquer um
 		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll() //permite qualquer um
 		.antMatchers(HttpMethod.POST, "/auth").permitAll() //permite qualquer um
+		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll() //actuator deve ser so para a equipe de infra e de operacoes
 		.anyRequest().authenticated()//para as demais url's e necessario estar autenticado
 		//.and().formLogin();//usa o formulario padrao do Spring tradicional que cria sessao
 		.and().csrf().disable() //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
