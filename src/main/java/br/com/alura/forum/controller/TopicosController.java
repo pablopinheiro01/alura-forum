@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,7 @@ public class TopicosController {
 	private CursoRepository cursoRepository;
 	
 	@GetMapping
+	@Cacheable(value = "listaDeTopicos")
 	//@ResponseBody com a anotacao do RestController o Spring identifica que todos os metodos vão ter o responseBody
 	//DTO - Usamos o padrao para quando os dados saem para o cliente
 	public Page<TopicoDto> lista(
@@ -92,6 +95,7 @@ public class TopicosController {
 	@PostMapping	
 	@Transactional //necessario para atualizar no banco - devemos colocar em todo metodo que tiver uma acao de escrita
 	//uriBuilder e injetado pelo Spring para nos
+	@CacheEvict(value = "listaDeTopicos", allEntries = true) //ele limpa o cache quando este metodo for chamado
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
 		Topico topico = form.converter(cursoRepository);
 		topicoRepository.save(topico);
@@ -115,6 +119,7 @@ public class TopicosController {
 	
 	@PutMapping("/{id}")
 	@Transactional //necessario para atualizar no banco - devemos colocar em todo metodo que tiver uma acao de escrita
+	@CacheEvict(value = "listaDeTopicos", allEntries = true) //ele limpa o cache quando este metodo for chamado
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form){
 		Optional<Topico> optional = topicoRepository.findById(id); 
 		
@@ -129,6 +134,7 @@ public class TopicosController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional //necessario para atualizar no banco - devemos colocar em todo metodo que tiver uma acao de escrita
+	@CacheEvict(value = "listaDeTopicos", allEntries = true) //ele limpa o cache quando este metodo for chamado
 	public ResponseEntity<?> remover(@PathVariable Long id){
 		Optional<Topico> topico = topicoRepository.findById(id); 
 		
