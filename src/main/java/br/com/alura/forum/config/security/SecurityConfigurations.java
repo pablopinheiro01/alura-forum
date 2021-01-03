@@ -53,6 +53,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll() //permite qualquer um
 		.antMatchers(HttpMethod.POST, "/auth").permitAll() //permite qualquer um
 		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll() //actuator deve ser so para a equipe de infra e de operacoes
+		.antMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
+		.antMatchers(HttpMethod.POST, "/h2-console/**").permitAll()
+		.antMatchers(HttpMethod.DELETE, "/topicos/**").hasRole("MODERADOR") //configurando restricao para deletar topicos somente para moderadores
 		.anyRequest().authenticated()//para as demais url's e necessario estar autenticado
 		//.and().formLogin();//usa o formulario padrao do Spring tradicional que cria sessao
 		.and().csrf().disable() //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
@@ -65,7 +68,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		//configuracao para ignorar os enderecos que o swagger chama
 		    web.ignoring()
-		        .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
+		    //essa linha so deve ser inserida para o caso de visualizacao do h2 devido nao conhecer todos os recursos que precisam ser liberados
+//		        .antMatchers("/**");
+		    //essa linha libera os acesso para o swagger
+		    .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
 	
 	
