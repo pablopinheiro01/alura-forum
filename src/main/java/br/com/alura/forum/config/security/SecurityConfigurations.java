@@ -19,7 +19,7 @@ import br.com.alura.forum.repository.UsuarioRepository;
 
 @EnableWebSecurity
 @Configuration //habilitamos a leitura dessa classe na inicializacao do Spring
-@Profile("prod") //essa classe so sera carregada no cenario de producao
+@Profile(value = { "prod", "test"} ) //essa classe so sera carregada no cenario de producao e de testes
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired

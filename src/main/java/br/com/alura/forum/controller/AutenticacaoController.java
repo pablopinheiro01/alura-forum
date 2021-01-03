@@ -21,7 +21,7 @@ import br.com.alura.forum.controller.form.LoginForm;
 //logica de autenticacao do jwt
 @RestController
 @RequestMapping("/auth")
-@Profile("prod") //so carregara esse controller no ambiente de producao
+@Profile(value = {"prod","test"}) //so carregara esse controller no ambiente de producao e de testes
 public class AutenticacaoController {
 	
 	//essa classe por algum motivo nao vem configurada para fazer a injecao de dependencia no spring
