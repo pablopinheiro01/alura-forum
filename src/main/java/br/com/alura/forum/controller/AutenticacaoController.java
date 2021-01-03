@@ -3,6 +3,7 @@ package br.com.alura.forum.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import br.com.alura.forum.controller.form.LoginForm;
 //logica de autenticacao do jwt
 @RestController
 @RequestMapping("/auth")
+@Profile("prod") //so carregara esse controller no ambiente de producao
 public class AutenticacaoController {
 	
 	//essa classe por algum motivo nao vem configurada para fazer a injecao de dependencia no spring

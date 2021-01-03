@@ -19,8 +19,8 @@ import br.com.alura.forum.repository.UsuarioRepository;
 
 @EnableWebSecurity
 @Configuration //habilitamos a leitura dessa classe na inicializacao do Spring
-@Profile("prod") //essa classe so sera carregada no cenario de producao
-public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
+@Profile("dev")//carrega essa classe somente se o ambiente for o declarado
+public class DevSecurityConfigurations2 extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService service;
@@ -51,29 +51,13 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/topicos").permitAll() //permite qualquer um
-		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll() //permite qualquer um
-		.antMatchers(HttpMethod.POST, "/auth").permitAll() //permite qualquer um
-		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll() //actuator deve ser so para a equipe de infra e de operacoes
-		.antMatchers(HttpMethod.GET, "/h2-console/**").permitAll()
-		.antMatchers(HttpMethod.POST, "/h2-console/**").permitAll()
-		.antMatchers(HttpMethod.DELETE, "/topicos/**").hasRole("MODERADOR") //configurando restricao para deletar topicos somente para moderadores
-		.anyRequest().authenticated()//para as demais url's e necessario estar autenticado
-		//.and().formLogin();//usa o formulario padrao do Spring tradicional que cria sessao
-		.and().csrf().disable() //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//aqui indico a autenticacao feita de maneira stateless
-		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);//antes de fazer qualquer coisa pega o nosso filtro para validar o token
+		.antMatchers("/**").permitAll() 
+		.and().csrf().disable(); //precisamos fazer essa configuracao para desabilitar crownfowarding para configurar o jwt
 	}
 	
 	//configuracao de recursos estaticos (requisicoes para js, css, imagens etc)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		//configuracao para ignorar os enderecos que o swagger chama
-		    web.ignoring()
-		    //essa linha so deve ser inserida para o caso de visualizacao do h2 devido nao conhecer todos os recursos que precisam ser liberados
-//		        .antMatchers("/**");
-		    //essa linha libera os acesso para o swagger
-		    .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
 	
 	
