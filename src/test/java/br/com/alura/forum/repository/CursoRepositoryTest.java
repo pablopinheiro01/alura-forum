@@ -25,7 +25,7 @@ public class CursoRepositoryTest {
 	@Autowired
 	private TestEntityManager em;
 	
-	@Test
+//	@Test
 	public void deveriaCarregarCursoAoBuscarPeloSeuNome() {
 		String nomeCurso = "HTML 5";
 		Curso curso = repository.findByNome(nomeCurso);
