@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>forum</name>
 	<description>Demo project for Spring Boot</description>
+	<packaging>war</packaging> <!-- quando gerar o build gera um WAR -->
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -27,6 +28,17 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		
+		<!--  configuracao para que o tomcat seja apenas do servidor e nao do springboot gerado automaticamente -->
+		<!--  
+		<dependency> 
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-tomcat</artifactId>
+		  quem vai prover vai sser o servidor e nao sera gerado junto com o WAR
+		    <scope>provide</scope> 
+		</dependency>
+		-->
+		
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-data-jpa</artifactId>
